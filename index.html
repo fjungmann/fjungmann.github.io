@@ -1,7 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Racing Club App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+    <header>
+        <img src="path_to_logo.png" alt="Racing Club Logo" id="logo">
+        <div id="menu">Menu</div> <!-- Placeholder for Menu -->
+    </header>
+
+    <main>
+        <button onclick="openLink('https://example.com/race-availability')">Next Race Availability</button>
+        <button onclick="openLink('https://docs.google.com/spreadsheets/d/1NGvPK4nF9ZWRyDEp6WSNsDTL9Jz27Ur5--ZXafntrrc/edit#gid=0')">Championship Standings</button>
+        <button onclick="navigateToWeatherGenerator()">Weather Generator</button>
+        <button onclick="openLink('https://drive.google.com/file/d/1578xi9mACCotNx7MUeJMpxelZQ3sBuGX/view')">Host Settings</button>
+        <button onclick="openLink('https://drive.google.com/file/d/1pYxNpsdXETbp_C6OmjpIOdu3Jz4McxtJ/view')">Tuning and Setups Guide</button>
+        <button onclick="showAlert()">Other Polls and Forms</button>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>
