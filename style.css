@@ -7,18 +7,29 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+
 }
 
 #logo {
-    height: 50px; /* Adjust as needed */
+    height: 20px; /* Adjust as needed */
+    margin: 0 auto; /* Center logo */
+    margin-bottom: 40px; /* Adjust as needed for space below the header */
 }
+
+#menu {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5em; /* Adjust size of the gear icon */
+}
+
 
 button {
     display: block;
     width: 80%;
     margin: 10px auto;
     padding: 10px;
-    background-color: #007bff;
+    background-color: #000000;
     color: white;
     border: none;
     border-radius: 5px;
@@ -28,3 +39,72 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+#raceInfo {
+    width: 80%;
+    margin: auto;
+    padding: 10px;
+    text-align: center;
+}
+
+.info-section {
+    margin-bottom: 20px;
+}
+
+#date-time-section, #weather-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-title_top {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.info-title {
+    font-weight: bold;
+    margin: 0;
+}
+
+.info-value_top {
+    color: blue;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+.info-value_left {
+    color: blue;
+    margin: 0;
+    text-align: left;
+    font-size: 0.9em;
+}
+
+.info-value_right {
+    color: blue;
+    margin: 0;
+    text-align: right;
+    font-size: 0.9em;
+}
+
+.info-title, .info-value {
+    text-align: center;
+    margin: 3px 0; /* Adjust spacing as needed */
+}
+
+
+/* Media query for larger screens (e.g., laptops) */
+@media (min-width: 768px) { /* Adjust the breakpoint as needed */
+
+    #raceInfo {
+        width: 25%; /* Narrower width for larger screens */
+        /* Additional styling adjustments for larger screens can go here */
+    }
+
+    button {
+        width: 20%; /* Smaller width on larger screens */
+        /* Additional styling adjustments for larger screens can go here */
+    }
+}
+
