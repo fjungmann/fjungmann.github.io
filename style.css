@@ -331,7 +331,7 @@ input[type="text"], input[type="date"], input[type="time"], select {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1280px) {
     .back-button {
         left: 5px; /* Adjust left position for smaller screens */
         padding: 4px 6px; /* Adjust padding for a smaller button */
@@ -357,4 +357,18 @@ input[type="text"], input[type="date"], input[type="time"], select {
         max-width: 200px;
     }
     
+}
+
+/* Disable hover effects for touch devices */
+@media (hover: none) {
+    button:hover {
+        background-color: #000000; /* Back to default button color */
+    }
+}
+
+/* You can similarly adjust for .red-button if needed */
+@media (hover: none) {
+    .red-button:hover {
+        background-color: red; /* Back to default red button color */
+    }
 }
