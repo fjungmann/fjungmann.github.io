@@ -17,6 +17,7 @@
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
     <script>
         // Your Firebase configuration
         var firebaseConfig = {
@@ -34,11 +35,12 @@
 
 <!-- Which script to use -->
     <script src="tracks.js"></script>
+    <script defer src="checkAuth.js"></script>
 
 </head>
 <body>
     <header>
-        <button class="back-button" onclick="window.location.href='index.html'">&#x2190; Back</button>
+        <button class="back-button" onclick="window.location.href='main.html'">&#x2190; Back</button>
         <div>
             <img src="111_new_logo.png" alt="One Eleven" id="logo">
         </div>

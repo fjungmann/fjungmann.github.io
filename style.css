@@ -358,17 +358,3 @@ input[type="text"], input[type="date"], input[type="time"], select {
     }
     
 }
-
-/* Disable hover effects for touch devices */
-@media (hover: none) {
-    button:hover {
-        background-color: #000000; /* Back to default button color */
-    }
-}
-
-/* You can similarly adjust for .red-button if needed */
-@media (hover: none) {
-    .red-button:hover {
-        background-color: red; /* Back to default red button color */
-    }
-}
