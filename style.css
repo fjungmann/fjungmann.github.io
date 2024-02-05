@@ -58,6 +58,7 @@ button {
     padding: 10px;
     background-color: #000000;
     color: white;
+    font-size: 0.9em;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -343,7 +344,8 @@ input[type="text"], input[type="date"], input[type="time"], select {
 
     button {
         width: auto; /* Allow button to size based on content */
-        min-width: 200px; /* Remove the minimum width */ 
+        min-width: 250px; /* Remove the minimum width */ 
+        font-size: 1em;
     }
     
     .red-button, .red-button:disabled, .red-button:disabled:hover {
