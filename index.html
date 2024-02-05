@@ -11,6 +11,8 @@
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
+
     <script>
         var firebaseConfig = {
             apiKey: "AIzaSyDpH1j5UfMlGXLqHaK7lqVWi0CkGbfN9SI",
@@ -32,14 +34,28 @@
 </head>
 <body>
     <header>
+        <!-- One Eleven Logo-->
         <img src="111_new_logo.png" alt="One Eleven" id="logo">
-    	<div id="menu"><i class="fa-solid fa-gear"></i></div> <!-- Gear Icon for Menu -->
+    	
+        <!-- Dropdown menu for Admin and About pages -->
+        <div id="menu">
+            <i class="fa-solid fa-gear"></i>
+            <div id="dropdown" class="dropdown-content">
+                <a href="adminPassword.html">
+                    Admin
+                    <i class="fa-solid fa-user-shield"></i> <!-- Icon for Admin -->
+                </a>
+                <a href="about.html">
+                    About
+                    <i class="fa-solid fa-circle-info"></i> <!-- Icon for About -->
+                </a>
+            </div>
+        </div>
+        
     </header>
 
     <main>
-
-	    <div id="raceInfo">
-	    	           
+	    <div id="raceInfo">	    	           
             <!-- First Section: Race Location -->
             <div class="info-section" id="location-section">
                 <p class="info-title_top">Next Race Location:</p>
@@ -49,11 +65,11 @@
             <!-- Second Section: Race Date and Time -->
             <div class="info-section" id="date-time-section">
                 <div>
-                    <p class="info-title">Next Race Date:</p>
+                    <p class="info-title_left">Next Race Date:</p>
                     <p class="info-value_left" id="raceDate">Loading...</p>
                 </div>
                 <div>
-                    <p class="info-title">Next Race Time:</p>
+                    <p class="info-title_right">Next Race Time:</p>
                     <p class="info-value_right" id="raceTime">Loading...</p>
                 </div>
             </div>

@@ -1,3 +1,14 @@
+var xoyondoLink = "";
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM fully loaded and parsed");
+
+    // Fetch and display race info
+    fetchAndUpdateRaceInfo();
+
+    // Setup menu dropdown toggle
+    setupMenuDropdown();
+});
 
 function fetchAndUpdateRaceInfo() {
     var databaseRef = firebase.database().ref();
@@ -26,6 +37,13 @@ function fetchAndUpdateRaceInfo() {
     databaseRef.child("weather2").on('value', function(snapshot) {
         document.getElementById("weather2").innerText = (snapshot.val() || "No data");
     });
+
+    // Fetch and update Xoyondo link
+    databaseRef.child("xoyondo_link").once('value', function(snapshot) {
+        xoyondoLink = snapshot.val() || "https://example.com/race-availability";
+        // Update the button's onclick attribute with the fetched link
+        document.querySelector('button[onclick*="race-availability"]').setAttribute('onclick', `openLink('${xoyondoLink}')`);
+    });
 }
 fetchAndUpdateRaceInfo();
 
@@ -41,3 +59,51 @@ function navigateToWeatherGenerator() {
 function showAlert() {
     alert('Coming Soon!');
 }
+
+function setupMenuDropdown() {
+    console.log("Setting up menu dropdown");
+
+    const gearIcon = document.querySelector('.fa-gear');
+    if (gearIcon) {
+        gearIcon.addEventListener('click', function(event) {
+            console.log("Gear icon clicked");
+            document.getElementById('dropdown').classList.toggle('show');
+            event.stopPropagation(); // Prevent immediate closing
+        });
+    } else {
+        console.log("Gear icon not found");
+    }
+
+    // Close dropdown when clicking outside
+    window.onclick = function(event) {
+        console.log("Window clicked");
+        if (!event.target.matches('.fa-gear')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    console.log("Closing dropdown");
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    };
+}
+
+document.querySelector('.fa-gear').addEventListener('click', function(event) {
+    document.getElementById('dropdown').classList.toggle('show');
+    event.stopPropagation(); // Prevents the window.onclick from immediately hiding the menu
+});
+
+// Close the dropdown if clicked outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.fa-gear')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+};
