@@ -8,7 +8,7 @@ document.getElementById('signin-button').addEventListener('click', function() {
         window.location.href = 'main.html'; // Redirect to main page
     }).catch(function(error) {
         // Handle sign-in errors
-        console.log('Sign-in error:', error);
+        console.log('Sign-in Error:', error);
     });
 });
 
