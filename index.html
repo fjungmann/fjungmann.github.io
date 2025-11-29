@@ -1,9 +1,576 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sunrise / Sunset Calculator (Trig-Based)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color-scheme: light dark;
+}
+
+/* DARK BACKGROUND, LIGHT CARD */
+body {
+  margin: 0;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+
+  background: #1f2937;   /* slate-800 */
+  color: #111827;        /* slate-900 text for card */
+}
+
+/* MAIN CARD */
+.card {
+  width: 100%;
+  max-width: 800px;
+  background: #f9fafb;   /* very light grey */
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem 1.75rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: 1px solid #e5e7eb;  /* light grey border */
+  color: #1f2937;
+}
+
+/* HEADERS */
+h1 {
+  font-size: 1.35rem;
+  margin: 0 0 0.5rem;
+  text-align: center;
+  color: #111827;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #6b7280;        /* slate-500 */
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 1.1rem 0 0.4rem;
+  color: #111827;       /* dark text */
+}
+
+/* LAYOUT ROWS */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.field {
+  flex: 1 1 140px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.field label {
+  font-size: 0.8rem;
+  color: #374151;      /* slate-700 */
+}
+
+/* INPUTS */
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+  padding: 0.45rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+  font-size: 0.85rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input::placeholder {
+  color: #9ca3af;      /* slate-400 */
+}
+
+/* INLINE NOTE */
+.inline-note {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* OUTPUT BOXES */
+.output-box {
+  padding: 0.45rem 0.55rem;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  font-size: 0.85rem;
+  min-height: 1.9rem;
+  display: flex;
+  align-items: center;
+  color: #1f2937;
+}
+
+/* DIVIDER */
+.divider {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* BUTTON */
+.btn-row {
+  margin-top: 0.6rem;
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+button {
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;  /* blue-600 */
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* RESULTS BOX */
+.results {
+  margin-top: 0.7rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  font-size: 0.9rem;
+  color: #1f2937;
+}
+
+.results span.label {
+  color: #6b7280;      /* slate-500 */
+  font-size: 0.85rem;
+}
+
+.results span.value {
+  font-weight: 600;
+  color: #111827;
+}
+
+.warning {
+  color: #b45309;      /* amber-700 */
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .card {
+    padding: 1rem 0.9rem 1.3rem;
+  }
+}
+
+  </style>
+</head>
 <body>
+  <div class="card">
+    <h1>Sunrise / Sunset Calculator</h1>
+    <div class="subtitle">
+      Trig-based estimate (declination + equation of time + altitude)
+    </div>
 
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
+    <!-- DATE + N + DECLINATION + EOT -->
+    <div class="section-title">Date &amp; solar parameters</div>
+    <div class="row">
+      <div class="field">
+        <label for="dateInput">Date</label>
+        <input type="date" id="dateInput" />
+      </div>
+      <div class="field">
+        <label>Day of year (N)</label>
+        <div class="output-box" id="nOutput">–</div>
+      </div>
+    </div>
 
+    <div class="row">
+      <div class="field">
+        <label>Solar declination δ (deg)</label>
+        <div class="output-box" id="deltaOutput">–</div>
+        <div class="inline-note">
+          δ = 23.44° · sin(0.9863 · (N − 80))
+        </div>
+      </div>
+      <div class="field">
+        <label>Equation of Time (EOT) (minutes)</label>
+        <div class="output-box" id="eotOutput">–</div>
+        <div class="inline-note">
+          B = 0.9863 · (N − 81) &nbsp;,&nbsp;
+          EOT ≈ 9.87 sin(2B) − 7.53 cosB − 1.50 sinB
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- WAYPOINT NAME & ETA -->
+    <div class="section-title">Reference Waypoint &amp; time context</div>
+    <div class="row">
+      <div class="field">
+        <label for="waypointInput">Waypoint name (for your reference)</label>
+        <input
+          type="text"
+          id="waypointInput"
+          placeholder="e.g. SOMAX / LON-DXB cruise point"
+        />
+      </div>
+      <div class="field">
+        <label for="etaInput">ETA at this point (optional, UTC)</label>
+        <input type="text" id="etaInput" placeholder="e.g. 15:32" />
+      </div>
+    </div>
+
+    <!-- LAT/LON -->
+    <div class="section-title">Position (latitude / longitude)</div>
+
+    <div class="row">
+      <div class="field">
+        <label>Latitude degrees</label>
+        <input
+          type="number"
+          id="latDeg"
+          placeholder="e.g. 51.2 (N positive, S negative)"
+          step="0.01"
+        />
+      </div>
+      <div class="field">
+        <label>Latitude minutes</label>
+        <input
+          type="number"
+          id="latMin"
+          placeholder="e.g. 12.0"
+          step="0.1"
+        />
+      </div>
+    </div>
+    <div class="inline-note">
+      Latitude: North is positive, South is negative. Minutes will follow the
+      sign of the degrees field.
+    </div>
+
+    <div class="row" style="margin-top: 0.6rem;">
+      <div class="field">
+        <label>Longitude degrees</label>
+        <input
+          type="number"
+          id="lonDeg"
+          placeholder="e.g. 0.1 (E positive, W negative)"
+          step="0.01"
+        />
+      </div>
+      <div class="field">
+        <label>Longitude minutes</label>
+        <input
+          type="number"
+          id="lonMin"
+          placeholder="e.g. 6.0"
+          step="0.1"
+        />
+      </div>
+    </div>
+    <div class="inline-note">
+      Longitude: East is positive, West is negative. Minutes will follow the
+      sign of the degrees field.
+    </div>
+
+    <!-- ALTITUDE & TARGET ANGLE -->
+    <div class="section-title">4. Altitude &amp; target horizon angle</div>
+    <div class="row">
+      <div class="field">
+        <label for="altInput">Altitude h (feet)</label>
+        <input
+          type="number"
+          id="altInput"
+          placeholder="e.g. 35000"
+          step="100"
+        />
+      </div>
+      <div class="field">
+        <label>Target Sun altitude h<sub>target</sub> (deg)</label>
+        <div class="output-box" id="targetOutput">–</div>
+        <div class="inline-note">
+          h<sub>target</sub> ≈ −0.83° − 0.0177 · √(h<sub>ft</sub>)
+        </div>
+      </div>
+    </div>
+
+    <!-- CALCULATE BUTTON -->
+    <div class="btn-row">
+      <button id="calcButton">Calculate Sunrise / Sunset (UTC)</button>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results" id="resultsBox">
+      <div><span class="label">Sunrise (UTC): </span>
+        <span class="value" id="sunriseOutput">–</span>
+      </div>
+      <div><span class="label">Sunset (UTC): </span>
+        <span class="value" id="sunsetOutput">–</span>
+      </div>
+      <div class="warning" id="warningBox"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- Utility functions (degrees <-> radians, trig in degrees) ---
+
+    function degToRad(deg) {
+      return (deg * Math.PI) / 180;
+    }
+
+    function radToDeg(rad) {
+      return (rad * 180) / Math.PI;
+    }
+
+    function sinDeg(deg) {
+      return Math.sin(degToRad(deg));
+    }
+
+    function cosDeg(deg) {
+      return Math.cos(degToRad(deg));
+    }
+
+    function acosDeg(x) {
+      return radToDeg(Math.acos(x));
+    }
+
+    // Day of year (N), 1..365, from a JS Date (local)
+    function dayOfYear(date) {
+      const start = new Date(date.getFullYear(), 0, 1); // Jan 1
+      const diff =
+        date.getTime() -
+        start.getTime() +
+        (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000;
+      return Math.floor(diff / (24 * 3600 * 1000)) + 1;
+    }
+
+    // Declination delta(N) in degrees
+    function calcDeclinationDeg(N) {
+      const inner = 0.9863 * (N - 80); // degrees
+      return 23.44 * sinDeg(inner);
+    }
+
+    // Equation of Time (EOT) in minutes
+    function calcEOTMinutes(N) {
+      const B = 0.9863 * (N - 81); // degrees
+      const twoB = 2 * B;
+      return (
+        9.87 * sinDeg(twoB) -
+        7.53 * cosDeg(B) -
+        1.5 * sinDeg(B)
+      );
+    }
+
+    // Target Sun altitude at given altitude in feet (deg)
+    // h_target ≈ -0.83° - 0.0177 * sqrt(h_ft)
+    function calcTargetAltitudeDeg(hFt) {
+      const h = Math.max(0, hFt || 0);
+      return -0.83 - 0.0177 * Math.sqrt(h);
+    }
+
+    // Convert degrees + minutes to signed decimal degrees
+    function degMinToDecimal(degValue, minValue) {
+      const d = parseFloat(degValue);
+      const m = parseFloat(minValue);
+
+      if (isNaN(d) && isNaN(m)) return NaN;
+      const degSign = isNaN(d) ? 1 : d >= 0 ? 1 : -1;
+
+      const absDeg = isNaN(d) ? 0 : Math.abs(d);
+      const absMin = isNaN(m) ? 0 : Math.abs(m);
+
+      let dec = absDeg + absMin / 60;
+      dec *= degSign;
+      return dec;
+    }
+
+    // Format UTC hours (0-24 float) to "HH:MM" string
+    function formatUTC(hours) {
+      if (!isFinite(hours)) return "–";
+      let h = hours;
+      // normalize to [0,24)
+      h = ((h % 24) + 24) % 24;
+      const wholeH = Math.floor(h);
+      const mins = Math.round((h - wholeH) * 60);
+      const finalH = (wholeH + Math.floor(mins / 60)) % 24;
+      const finalM = mins % 60;
+      const hh = finalH.toString().padStart(2, "0");
+      const mm = finalM.toString().padStart(2, "0");
+      return `${hh}:${mm}`;
+    }
+
+    // Compute N, delta, EOT when date changes
+    function updateDateRelatedFields() {
+      const dateInput = document.getElementById("dateInput");
+      const nOutput = document.getElementById("nOutput");
+      const deltaOutput = document.getElementById("deltaOutput");
+      const eotOutput = document.getElementById("eotOutput");
+
+      if (!dateInput.value) {
+        nOutput.textContent = "–";
+        deltaOutput.textContent = "–";
+        eotOutput.textContent = "–";
+        return;
+      }
+
+      const d = new Date(dateInput.value + "T12:00:00"); // midday to avoid DST oddities
+      const N = dayOfYear(d);
+      const delta = calcDeclinationDeg(N);
+      const eot = calcEOTMinutes(N);
+
+      nOutput.textContent = N;
+      deltaOutput.textContent = `${delta.toFixed(2)}°`;
+      eotOutput.textContent = `${eot.toFixed(1)} min`;
+    }
+
+    // Compute target altitude whenever altitude changes
+    function updateTargetAltitude() {
+      const altInput = document.getElementById("altInput");
+      const targetOutput = document.getElementById("targetOutput");
+      const hFt = parseFloat(altInput.value) || 0;
+      const hTarget = calcTargetAltitudeDeg(hFt);
+      targetOutput.textContent = `${hTarget.toFixed(2)}°`;
+    }
+
+    // Main sunrise/sunset calculation using:
+    // t_UTC ≈ 12 ± (1/15) * acos((sin h_t - sin φ sin δ) / (cos φ cos δ)) - λ / 15
+    function calculateSunriseSunset() {
+      const warningBox = document.getElementById("warningBox");
+      warningBox.textContent = "";
+
+      const dateInput = document.getElementById("dateInput");
+      if (!dateInput.value) {
+        warningBox.textContent = "Please select a date.";
+        return;
+      }
+
+      const d = new Date(dateInput.value + "T12:00:00");
+      const N = dayOfYear(d);
+      const deltaDeg = calcDeclinationDeg(N);
+      const eotMinutes = calcEOTMinutes(N);   // Equation of time in minutes
+      const eotHours = eotMinutes / 60;       // Convert to hours
+
+      // Latitude and longitude
+      const latDeg = document.getElementById("latDeg").value;
+      const latMin = document.getElementById("latMin").value;
+      const lonDeg = document.getElementById("lonDeg").value;
+      const lonMin = document.getElementById("lonMin").value;
+
+      const phi = degMinToDecimal(latDeg, latMin); // latitude
+      const lambda = degMinToDecimal(lonDeg, lonMin); // longitude (E+, W-)
+
+      if (!isFinite(phi) || isNaN(phi)) {
+        warningBox.textContent = "Please enter a valid latitude.";
+        return;
+      }
+      if (!isFinite(lambda) || isNaN(lambda)) {
+        warningBox.textContent = "Please enter a valid longitude.";
+        return;
+      }
+
+      // Altitude and target altitude
+      const altFt = parseFloat(document.getElementById("altInput").value) || 0;
+      const hTarget = calcTargetAltitudeDeg(altFt);
+
+      // Precompute sines/cosines
+      const sinPhi = sinDeg(phi);
+      const cosPhi = cosDeg(phi);
+      const sinDelta = sinDeg(deltaDeg);
+      const cosDelta = cosDeg(deltaDeg);
+      const sinHtarget = sinDeg(hTarget);
+
+      const denom = cosPhi * cosDelta;
+
+      if (Math.abs(denom) < 1e-6) {
+        warningBox.textContent =
+          "Geometry is degenerate at this latitude/declination (cosφ·cosδ ≈ 0).";
+        document.getElementById("sunriseOutput").textContent = "–";
+        document.getElementById("sunsetOutput").textContent = "–";
+        return;
+      }
+
+      const numerator = sinHtarget - sinPhi * sinDelta;
+      let argument = numerator / denom;
+
+      // Clamp for safety due to rounding
+      if (argument > 1) argument = 1;
+      if (argument < -1) argument = -1;
+
+      // If |argument| > 1 (unclamped), then technically no sunrise/sunset
+      if (numerator / denom > 1.0001 || numerator / denom < -1.0001) {
+        // Determine if Sun always above or always below
+        const always =
+          numerator / denom < -1
+            ? "Sun never sets to that altitude at this location/date."
+            : "Sun never rises to that altitude at this location/date.";
+        warningBox.textContent = always;
+        document.getElementById("sunriseOutput").textContent = "–";
+        document.getElementById("sunsetOutput").textContent = "–";
+        return;
+      }
+
+      const H0 = acosDeg(argument); // degrees
+
+      // Sunrise / Sunset UTC (without EOT correction in the formula)
+      // t_UTC,rise  ≈ 12 - H0/15 - λ/15
+      // t_UTC,set   ≈ 12 + H0/15 - λ/15
+      const tRiseUTC = 12 - H0 / 15 - lambda / 15 - eotHours;
+      const tSetUTC = 12 + H0 / 15 - lambda / 15 - eotHours;
+
+      const sunriseOutput = document.getElementById("sunriseOutput");
+      const sunsetOutput = document.getElementById("sunsetOutput");
+
+      sunriseOutput.textContent = formatUTC(tRiseUTC);
+      sunsetOutput.textContent = formatUTC(tSetUTC);
+    }
+
+    // --- Wire up events and defaults ---
+    window.addEventListener("DOMContentLoaded", () => {
+      const dateInput = document.getElementById("dateInput");
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const dd = String(today.getDate()).padStart(2, "0");
+      dateInput.value = `${yyyy}-${mm}-${dd}`;
+
+      updateDateRelatedFields();
+
+      document
+        .getElementById("dateInput")
+        .addEventListener("change", updateDateRelatedFields);
+
+      document
+        .getElementById("altInput")
+        .addEventListener("input", updateTargetAltitude);
+
+      document
+        .getElementById("calcButton")
+        .addEventListener("click", () => {
+          updateDateRelatedFields();
+          updateTargetAltitude();
+          calculateSunriseSunset();
+        });
+
+      // Initialize target altitude for default altitude (0 ft)
+      updateTargetAltitude();
+    });
+  </script>
 </body>
-</html> 
+</html>
